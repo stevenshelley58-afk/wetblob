@@ -1,0 +1,16 @@
+{
+  "name": "wetblob",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev:infra": "docker compose up -d",
+    "dev:down": "docker compose down",
+    "db:migrate": "pnpm -C packages/lake-db migrate",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "@types/node": "^25.1.0",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.8"
+  }
+}

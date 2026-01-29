@@ -1,0 +1,25 @@
+{
+  "name": "@wetblob/lake-db",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "migrate": "node dist/migrate.cli.js",
+    "test": "echo 'No tests in lake-db package'"
+  },
+  "dependencies": {
+    "pg-promise": "^11.10.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

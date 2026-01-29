@@ -1,0 +1,14 @@
+{
+  "name": "wetblob",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "postCreateCommand": "corepack enable && corepack prepare pnpm@9.15.0 --activate",
+  "forwardPorts": [9000, 9001],
+  "portsAttributes": {
+    "9001": { "label": "MinIO Console" },
+    "9000": { "label": "MinIO API" }
+  }
+}
+
