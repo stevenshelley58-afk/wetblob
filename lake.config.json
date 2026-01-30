@@ -1,0 +1,11 @@
+{
+  "collectors": [
+    {
+      "type": "http_snapshot",
+      "name": "docs_seed",
+      "urls": ["https://example.com", "https://example.org"],
+      "headers": {},
+      "timeoutMs": 20000
+    }
+  ]
+}

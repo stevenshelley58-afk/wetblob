@@ -6,6 +6,9 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Generate unique content to avoid conflicts between test runs
+const testId = Date.now().toString(36);
+
 describe('Blobs', () => {
   const db = createDb();
   const migrationsDir = join(__dirname, '../../lake-db/migrations');
@@ -19,7 +22,7 @@ describe('Blobs', () => {
   });
 
   it('putBlob twice same bytes => same blobId, second inserted=false', async () => {
-    const bytes = Buffer.from('hello world');
+    const bytes = Buffer.from(`hello world ${testId} ${Math.random()}`);
     
     const result1 = await putBlob(db, { bytes });
     expect(result1.inserted).toBe(true);
@@ -31,7 +34,7 @@ describe('Blobs', () => {
   });
 
   it('putBlob with mimeType stores mime type', async () => {
-    const bytes = Buffer.from('test content');
+    const bytes = Buffer.from(`test content ${testId} ${Math.random()}`);
     const result = await putBlob(db, { bytes, mimeType: 'text/plain' });
     expect(result.inserted).toBe(true);
   });

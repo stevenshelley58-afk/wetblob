@@ -41,29 +41,30 @@ export async function leaseNextTask(
   workerId: string,
   leaseMs: number
 ): Promise<Task | null> {
-  // Atomic lease using FOR UPDATE SKIP LOCKED
-  const row = await db.oneOrNone(
-    `WITH next AS (
-      SELECT task_id
-      FROM tasks
-      WHERE status = 'queued'
-        AND due_at <= now()
-        AND (locked_until IS NULL OR locked_until < now())
-      ORDER BY priority DESC, due_at ASC
-      FOR UPDATE SKIP LOCKED
-      LIMIT 1
-    )
-    UPDATE tasks
-    SET status = 'leased',
-        locked_until = now() + ($2::int || ' milliseconds')::interval,
-        locked_by = $1,
-        updated_at = now()
-    WHERE task_id IN (SELECT task_id FROM next)
-    RETURNING *`,
-    [workerId, leaseMs]
-  );
-  
-  return row;
+  // Atomic lease using FOR UPDATE SKIP LOCKED - must use a transaction
+  return db.tx(async tx => {
+    const row = await tx.oneOrNone(
+      `WITH next AS (
+        SELECT task_id
+        FROM tasks
+        WHERE status = 'queued'
+          AND due_at <= now()
+          AND (locked_until IS NULL OR locked_until < now())
+        ORDER BY priority DESC, due_at ASC
+        FOR UPDATE SKIP LOCKED
+        LIMIT 1
+      )
+      UPDATE tasks
+      SET status = 'leased',
+          locked_until = now() + ($2::int || ' milliseconds')::interval,
+          locked_by = $1,
+          updated_at = now()
+      WHERE task_id IN (SELECT task_id FROM next)
+      RETURNING *`,
+      [workerId, leaseMs]
+    );
+    return row;
+  });
 }
 
 export async function markTaskRunning(db: Db, taskId: string): Promise<void> {

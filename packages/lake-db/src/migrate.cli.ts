@@ -1,8 +1,13 @@
 #!/usr/bin/env node
+import { config } from 'dotenv';
 import { createDb } from './db.js';
 import { migrate } from './migrate.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+
+// Load .env file from project root
+config({ path: join(process.cwd(), '..', '..', '.env') });
+config({ path: join(process.cwd(), '.env') });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

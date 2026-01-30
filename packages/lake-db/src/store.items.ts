@@ -59,3 +59,52 @@ export async function touchUpdatedAt(db: Db, itemId: string): Promise<void> {
     [itemId]
   );
 }
+
+export async function findItemsByCanonicalUri(
+  db: Db,
+  canonicalUri: string
+): Promise<Item[]> {
+  return db.manyOrNone(
+    `SELECT * FROM items WHERE canonical_uri = $1 ORDER BY created_at DESC`,
+    [canonicalUri]
+  );
+}
+
+export async function findItemsByContentSha256(
+  db: Db,
+  contentSha256: string
+): Promise<Item[]> {
+  return db.manyOrNone(
+    `SELECT * FROM items WHERE content_sha256 = $1 ORDER BY created_at DESC`,
+    [contentSha256]
+  );
+}
+
+export interface ListItemsOptions {
+  type?: string;
+  limit?: number;
+}
+
+export async function listItems(
+  db: Db,
+  options: ListItemsOptions = {}
+): Promise<Item[]> {
+  const { type, limit = 20 } = options;
+  
+  if (type) {
+    return db.manyOrNone(
+      `SELECT * FROM items 
+       WHERE type = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2`,
+      [type, limit]
+    );
+  }
+  
+  return db.manyOrNone(
+    `SELECT * FROM items 
+     ORDER BY created_at DESC 
+     LIMIT $1`,
+    [limit]
+  );
+}

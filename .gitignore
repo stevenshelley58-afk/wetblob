@@ -3,6 +3,7 @@ node_modules/
 .pnpm-store/
 
 # Build outputs
+dist/
 *.js
 *.js.map
 *.d.ts

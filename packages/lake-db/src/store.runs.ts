@@ -9,14 +9,16 @@ export interface CreateRunInput {
   toolVersion?: string;
   idempotencyKey?: string;
   parentRunId?: string;
+  normalizationVersion?: string;
+  collectorVersion?: string;
 }
 
 export async function createRun(db: Db, input: CreateRunInput): Promise<Run> {
   const runId = ulid();
   
   const row = await db.one(
-    `INSERT INTO runs(run_id, parent_run_id, kind, actor, tool_name, tool_version, idempotency_key)
-     VALUES($1, $2, $3, $4, $5, $6, $7)
+    `INSERT INTO runs(run_id, parent_run_id, kind, actor, tool_name, tool_version, idempotency_key, normalization_version, collector_version)
+     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
      RETURNING *`,
     [
       runId,
@@ -25,7 +27,9 @@ export async function createRun(db: Db, input: CreateRunInput): Promise<Run> {
       input.actor ?? null,
       input.toolName ?? null,
       input.toolVersion ?? null,
-      input.idempotencyKey ?? null
+      input.idempotencyKey ?? null,
+      input.normalizationVersion ?? 'v1',
+      input.collectorVersion ?? null
     ]
   );
   

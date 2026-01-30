@@ -16,6 +16,7 @@
     "test": "echo 'No tests in lake-db package'"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "pg-promise": "^11.10.2"
   },
   "devDependencies": {
