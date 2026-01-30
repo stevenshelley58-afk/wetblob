@@ -6,7 +6,9 @@
     "dev:infra": "docker compose up -d",
     "dev:down": "docker compose down",
     "db:migrate": "pnpm -C packages/lake-db migrate",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "dev:gateway": "pnpm -C packages/lake-gateway dev",
+    "build:gateway": "pnpm -C packages/lake-gateway build"
   },
   "devDependencies": {
     "@types/node": "^25.1.0",
